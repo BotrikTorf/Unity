@@ -576,24 +576,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _door: {fileID: 68391901}
   _audioSource: {fileID: 1490197314}
+  _soundChangeRate: 0.1
 --- !u!1 &1568916090 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5626044705830574109, guid: 4909776cdfe40e7469cebc657c694607, type: 3}
   m_PrefabInstance: {fileID: 5626044706393547651}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1568916093
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1568916090}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9e255f509708db74eb9d9ead00885140, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _material: {fileID: 2100000, guid: 8b82867344f407e429d2821dbbb333d5, type: 2}
 --- !u!114 &1568916094
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -608,7 +596,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _door: {fileID: 68391901}
   _material: {fileID: 2100000, guid: 8b82867344f407e429d2821dbbb333d5, type: 2}
-  _speed: 0.1
+  _speed: 0.5
 --- !u!1001 &2042522764638155110
 PrefabInstance:
   m_ObjectHideFlags: 0

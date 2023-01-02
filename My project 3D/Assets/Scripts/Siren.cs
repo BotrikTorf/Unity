@@ -1,49 +1,40 @@
-using System.Collections;
 using UnityEngine;
 
 public class Siren : MonoBehaviour
 {
     [SerializeField] private Door _door;
     [SerializeField] private AudioSource _audioSource;
-    private Coroutine _repleseCoroutine;
+    [SerializeField] private float _soundChangeRate = 0.1f;
+    private bool isRun = false;
 
-    private void OnEnable() => _door.EventsAction += RestartCoroutine;
-
-    private void OnDisable() => _door.EventsAction -= RestartCoroutine;
-
-    private IEnumerator ChangeSound()
+    private void Start()
     {
-        if (_audioSource.volume == 0)
+        _audioSource.volume = 0;
+        _audioSource.Stop();
+    }
+
+    private void OnEnable() => _door.PassedThief += ControlsSiren;
+
+    private void OnDisable() => _door.PassedThief -= ControlsSiren;
+
+    private void Update()
+    {
+        if (isRun)
         {
-            for (float i = 0; i <= 1; i += 0.01f)
+            if (_audioSource.volume == 0)
             {
-                _audioSource.volume = i;
-                yield return new WaitForSeconds(0.05f);
+                _audioSource.Play();
             }
+            _audioSource.volume += Time.deltaTime * _soundChangeRate;
         }
         else
         {
-            for (float i = 1; i >= 0; i -= 0.01f)
+            if (_audioSource.volume == 0)
             {
-                _audioSource.volume = i;
-                yield return new WaitForSeconds(0.05f);
+                _audioSource.Stop();
             }
+            _audioSource.volume -= Time.deltaTime * _soundChangeRate;
         }
     }
-
-    public void RestartCoroutine(bool selector)
-    {
-        if (selector)
-        {
-            _audioSource.volume = 0;
-            _audioSource.Play();
-        }
-
-        if (_repleseCoroutine != null)
-        {
-            StopCoroutine(_repleseCoroutine);
-        }
-
-        _repleseCoroutine = StartCoroutine(ChangeSound());
-    }
+    public void ControlsSiren(bool haveTurnSiren) => isRun = haveTurnSiren;
 }

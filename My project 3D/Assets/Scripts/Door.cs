@@ -3,21 +3,17 @@ using UnityEngine.Events;
 
 public class Door : MonoBehaviour
 {
-    public event UnityAction<bool> EventsAction;
+    public event UnityAction<bool> PassedThief;
 
     public void OnTriggerEnter(Collider collider)
     {
         if (collider.TryGetComponent(out Player _))
-        {
-            EventsAction?.Invoke(true);
-        }
+            PassedThief?.Invoke(true);
     }
 
     public void OnTriggerExit(Collider collider)
     {
         if (collider.TryGetComponent(out Player _))
-        {
-            EventsAction?.Invoke(false);
-        }
+            PassedThief?.Invoke(false);
     }
 }
