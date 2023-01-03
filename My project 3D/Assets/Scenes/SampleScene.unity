@@ -576,7 +576,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _door: {fileID: 68391901}
   _audioSource: {fileID: 1490197314}
-  _soundChangeRate: 0.1
+  _soundChangeRate: 0.0005
 --- !u!1 &1568916090 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5626044705830574109, guid: 4909776cdfe40e7469cebc657c694607, type: 3}
@@ -596,7 +596,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _door: {fileID: 68391901}
   _material: {fileID: 2100000, guid: 8b82867344f407e429d2821dbbb333d5, type: 2}
-  _speed: 0.5
+  _speed: 0.005
 --- !u!1001 &2042522764638155110
 PrefabInstance:
   m_ObjectHideFlags: 0

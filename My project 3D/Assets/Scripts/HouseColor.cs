@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class HouseColor : MonoBehaviour
@@ -5,8 +6,8 @@ public class HouseColor : MonoBehaviour
     [SerializeField] private Door _door;
     [SerializeField] private Material _material;
     private bool _isRun = false;
-    [SerializeField] private float _speed = 0.5f;
-    private bool _canSwitchColor = true;
+    [SerializeField] private float _speed = 0.005f;
+    private Coroutine _repleseCoroutine;
 
     private void Start() => _material.color = Color.green;
 
@@ -14,31 +15,52 @@ public class HouseColor : MonoBehaviour
 
     private void OnDisable() => _door.PassedThief -= TurnedSiren;
 
-    private void Update()
+    private void TurnedSiren(bool isRun)
     {
+        _isRun = isRun;
+
+        if (_repleseCoroutine != null)
+        {
+            StopCoroutine(_repleseCoroutine);
+        }
+
+        _repleseCoroutine = StartCoroutine(ChangesColor());
+    }
+
+    private IEnumerator ChangesColor()
+    {
+        var timeDelay = new WaitForSeconds(_speed);
+        bool canSwitchColor = true;
         Color color = _material.color;
 
         if (_isRun)
         {
-            float speedDeltaTime = Time.deltaTime * _speed;
-
-            if (_canSwitchColor)
+            while (_isRun)
             {
-                color.r += speedDeltaTime;
-                color.g -= speedDeltaTime;
-                _material.color = color;
+                if (canSwitchColor)
+                {
+                    for (float i = 0; i <= 1f; i += _speed)
+                    {
+                        color.r = i;
+                        color.g = 1 - i;
+                        _material.color = color;
+                        yield return timeDelay;
+                    }
 
-                if (color.r > 0.9f)
-                    _canSwitchColor = false;
-            }
-            else
-            {
-                color.r -= speedDeltaTime;
-                color.g += speedDeltaTime;
-                _material.color = color;
+                    canSwitchColor = false;
+                }
+                else
+                {
+                    for (float i = 0; i <= 1f; i += _speed)
+                    {
+                        color.r = 1 - i;
+                        color.g = i;
+                        _material.color = color;
+                        yield return timeDelay;
+                    }
 
-                if (color.r < 0.1f)
-                    _canSwitchColor = true;
+                    canSwitchColor = true;
+                }
             }
         }
         else
@@ -46,6 +68,4 @@ public class HouseColor : MonoBehaviour
             _material.color = Color.green;
         }
     }
-
-    public void TurnedSiren(bool isRun) => _isRun = isRun;
 }
