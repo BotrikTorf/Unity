@@ -5,17 +5,18 @@ public class HouseColor : MonoBehaviour
 {
     [SerializeField] private Door _door;
     [SerializeField] private Material _material;
-    private bool _isRun = false;
     [SerializeField] private float _speed = 0.005f;
+
+    private bool _isRun = false;
     private Coroutine _repleseCoroutine;
 
     private void Start() => _material.color = Color.green;
 
-    private void OnEnable() => _door.PassedThief += TurnedSiren;
+    private void OnEnable() => _door.PassedThief += OnPassedThief;
 
-    private void OnDisable() => _door.PassedThief -= TurnedSiren;
+    private void OnDisable() => _door.PassedThief -= OnPassedThief;
 
-    private void TurnedSiren(bool isRun)
+    private void OnPassedThief(bool isRun)
     {
         _isRun = isRun;
 
@@ -33,37 +34,35 @@ public class HouseColor : MonoBehaviour
         bool canSwitchColor = true;
         Color color = _material.color;
 
-        if (_isRun)
+        while (_isRun)
         {
-            while (_isRun)
+            if (canSwitchColor)
             {
-                if (canSwitchColor)
+                for (float i = 0; i <= 1f; i += _speed)
                 {
-                    for (float i = 0; i <= 1f; i += _speed)
-                    {
-                        color.r = i;
-                        color.g = 1 - i;
-                        _material.color = color;
-                        yield return timeDelay;
-                    }
-
-                    canSwitchColor = false;
+                    color.r = i;
+                    color.g = 1 - i;
+                    _material.color = color;
+                    yield return timeDelay;
                 }
-                else
+
+                canSwitchColor = false;
+            }
+            else
+            {
+                for (float i = 0; i <= 1f; i += _speed)
                 {
-                    for (float i = 0; i <= 1f; i += _speed)
-                    {
-                        color.r = 1 - i;
-                        color.g = i;
-                        _material.color = color;
-                        yield return timeDelay;
-                    }
-
-                    canSwitchColor = true;
+                    color.r = 1 - i;
+                    color.g = i;
+                    _material.color = color;
+                    yield return timeDelay;
                 }
+
+                canSwitchColor = true;
             }
         }
-        else
+
+        if (_isRun == false)
         {
             _material.color = Color.green;
         }

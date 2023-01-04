@@ -1,12 +1,12 @@
 using System.Collections;
 using UnityEngine;
 
-
 public class Siren : MonoBehaviour
 {
     [SerializeField] private Door _door;
     [SerializeField] private AudioSource _audioSource;
     [SerializeField] private float _soundChangeRate = 0.0005f;
+
     private Coroutine _repleseCoroutine;
     private bool isRun = false;
 
@@ -16,15 +16,11 @@ public class Siren : MonoBehaviour
         _audioSource.Stop();
     }
 
-    private void OnEnable() => _door.PassedThief += ControlsSiren;
+    private void OnEnable() => _door.PassedThief += OnPassedThief;
 
-    private void OnDisable() => _door.PassedThief -= ControlsSiren;
+    private void OnDisable() => _door.PassedThief -= OnPassedThief;
 
-    //private void Update()
-    //{
-
-    //}
-    private void ControlsSiren(bool haveTurnSiren)
+    private void OnPassedThief(bool haveTurnSiren)
     {
         isRun = haveTurnSiren;
 
@@ -46,26 +42,21 @@ public class Siren : MonoBehaviour
     {
         var timeDelay = new WaitForSeconds(_soundChangeRate);
 
-        if (isRun)
+        while (isRun)
         {
-            while (isRun)
-            {
-                _audioSource.volume += _soundChangeRate;
-                yield return timeDelay;
-            }
+            _audioSource.volume += _soundChangeRate;
+            yield return timeDelay;
         }
-        else
-        {
-            while (_audioSource.volume > 0)
-            {
-                _audioSource.volume -= _soundChangeRate;
-                yield return timeDelay;
-            }
 
-            if (_audioSource.volume == 0)
-            {
-                _audioSource.Stop();
-            }
+        while (_audioSource.volume > 0 && isRun == false)
+        {
+            _audioSource.volume -= _soundChangeRate;
+            yield return timeDelay;
+        }
+
+        if (_audioSource.volume == 0 && isRun == false)
+        {
+            _audioSource.Stop();
         }
     }
 }
