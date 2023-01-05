@@ -31,34 +31,25 @@ public class HouseColor : MonoBehaviour
     private IEnumerator ChangesColor()
     {
         var timeDelay = new WaitForSeconds(_speed);
-        bool canSwitchColor = true;
         Color color = _material.color;
+        float minValue = 0f;
+        float maxValue = 1f;
+        float stepIteration = 0f;
 
         while (_isRun)
         {
-            if (canSwitchColor)
-            {
-                for (float i = 0; i <= 1f; i += _speed)
-                {
-                    color.r = i;
-                    color.g = 1 - i;
-                    _material.color = color;
-                    yield return timeDelay;
-                }
+            color.r = Mathf.Lerp(minValue, maxValue, stepIteration);
+            color.g = 1 - Mathf.Lerp(minValue, maxValue, stepIteration);
+            _material.color = color;
+            stepIteration += _speed;
+            yield return timeDelay;
 
-                canSwitchColor = false;
-            }
-            else
+            if (stepIteration > 1)
             {
-                for (float i = 0; i <= 1f; i += _speed)
-                {
-                    color.r = 1 - i;
-                    color.g = i;
-                    _material.color = color;
-                    yield return timeDelay;
-                }
-
-                canSwitchColor = true;
+                stepIteration = maxValue;
+                maxValue = minValue;
+                minValue = stepIteration;
+                stepIteration = 0f;
             }
         }
 

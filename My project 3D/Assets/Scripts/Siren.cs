@@ -25,15 +25,10 @@ public class Siren : MonoBehaviour
         isRun = haveTurnSiren;
 
         if (haveTurnSiren)
-        {
-            _audioSource.volume = 0;
             _audioSource.Play();
-        }
 
         if (_repleseCoroutine != null)
-        {
             StopCoroutine(_repleseCoroutine);
-        }
 
         _repleseCoroutine = StartCoroutine(ChangesSound());
     }
@@ -42,15 +37,15 @@ public class Siren : MonoBehaviour
     {
         var timeDelay = new WaitForSeconds(_soundChangeRate);
 
-        while (isRun)
+        while (isRun && _audioSource.volume <= 1)
         {
-            _audioSource.volume += _soundChangeRate;
+            _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, _audioSource.maxDistance, _soundChangeRate);
             yield return timeDelay;
         }
 
         while (_audioSource.volume > 0 && isRun == false)
         {
-            _audioSource.volume -= _soundChangeRate;
+            _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, _audioSource.minDistance, -_soundChangeRate);
             yield return timeDelay;
         }
 
