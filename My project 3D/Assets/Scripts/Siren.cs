@@ -6,9 +6,9 @@ public class Siren : MonoBehaviour
     [SerializeField] private Door _door;
     [SerializeField] private AudioSource _audioSource;
     [SerializeField] private float _soundChangeRate = 0.0005f;
+    [SerializeField] private float _maxVolume = 1f;
 
     private Coroutine _repleseCoroutine;
-    private bool isRun = false;
 
     private void Start()
     {
@@ -22,36 +22,34 @@ public class Siren : MonoBehaviour
 
     private void OnPassedThief(bool haveTurnSiren)
     {
-        isRun = haveTurnSiren;
-
         if (haveTurnSiren)
             _audioSource.Play();
 
         if (_repleseCoroutine != null)
             StopCoroutine(_repleseCoroutine);
 
-        _repleseCoroutine = StartCoroutine(ChangesSound());
+        _repleseCoroutine = StartCoroutine(ChangesSound(haveTurnSiren));
     }
 
-    private IEnumerator ChangesSound()
+    private IEnumerator ChangesSound(bool haveChangesSound)
     {
         var timeDelay = new WaitForSeconds(_soundChangeRate);
+        float soundChangeDirection;
 
-        while (isRun && _audioSource.volume <= 1)
+        if (haveChangesSound)
+            soundChangeDirection = _soundChangeRate;
+        else
+            soundChangeDirection = -_soundChangeRate;
+
+        _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, _maxVolume, soundChangeDirection);
+
+        while (_audioSource.volume < _maxVolume && _audioSource.volume > 0)
         {
-            _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, _audioSource.maxDistance, _soundChangeRate);
+            _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, _maxVolume, soundChangeDirection);
             yield return timeDelay;
         }
 
-        while (_audioSource.volume > 0 && isRun == false)
-        {
-            _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, _audioSource.minDistance, -_soundChangeRate);
-            yield return timeDelay;
-        }
-
-        if (_audioSource.volume == 0 && isRun == false)
-        {
+        if (_audioSource.volume == 0)
             _audioSource.Stop();
-        }
     }
 }

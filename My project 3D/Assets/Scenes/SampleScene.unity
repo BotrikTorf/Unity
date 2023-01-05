@@ -577,6 +577,7 @@ MonoBehaviour:
   _door: {fileID: 68391901}
   _audioSource: {fileID: 1490197314}
   _soundChangeRate: 0.0005
+  _maxVolume: 1
 --- !u!1 &1568916090 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5626044705830574109, guid: 4909776cdfe40e7469cebc657c694607, type: 3}
