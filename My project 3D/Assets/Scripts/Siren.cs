@@ -22,34 +22,38 @@ public class Siren : MonoBehaviour
 
     private void OnPassedThief(bool haveTurnSiren)
     {
+        float soundChangeDirection;
+        float target;
+
         if (haveTurnSiren)
+        {
             _audioSource.Play();
+            soundChangeDirection = _soundChangeRate;
+            target = _maxVolume;
+        }
+        else
+        {
+            soundChangeDirection = - _soundChangeRate;
+            target = 0;
+        }
 
         if (_repleseCoroutine != null)
             StopCoroutine(_repleseCoroutine);
 
-        _repleseCoroutine = StartCoroutine(ChangesSound(haveTurnSiren));
+        _repleseCoroutine = StartCoroutine(ChangesSound(soundChangeDirection, target));
     }
 
-    private IEnumerator ChangesSound(bool haveChangesSound)
+    private IEnumerator ChangesSound(float soundChangeDirection, float target)
     {
         var timeDelay = new WaitForSeconds(_soundChangeRate);
-        float soundChangeDirection;
 
-        if (haveChangesSound)
-            soundChangeDirection = _soundChangeRate;
-        else
-            soundChangeDirection = -_soundChangeRate;
-
-        _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, _maxVolume, soundChangeDirection);
-
-        while (_audioSource.volume < _maxVolume && _audioSource.volume > 0)
+        while (_audioSource.volume != target)
         {
             _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, _maxVolume, soundChangeDirection);
             yield return timeDelay;
         }
 
-        if (_audioSource.volume == 0)
+        if (_audioSource.volume <= _soundChangeRate)
             _audioSource.Stop();
     }
 }
