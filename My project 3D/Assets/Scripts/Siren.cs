@@ -5,7 +5,7 @@ public class Siren : MonoBehaviour
 {
     [SerializeField] private Door _door;
     [SerializeField] private AudioSource _audioSource;
-    [SerializeField] private float _soundChangeRate = 0.0005f;
+    [SerializeField] private float _soundChangeRate = 0.005f;
     [SerializeField] private float _maxVolume = 1f;
 
     private Coroutine _repleseCoroutine;
@@ -22,34 +22,31 @@ public class Siren : MonoBehaviour
 
     private void OnPassedThief(bool haveTurnSiren)
     {
-        float soundChangeDirection;
         float target;
 
         if (haveTurnSiren)
         {
             _audioSource.Play();
-            soundChangeDirection = _soundChangeRate;
             target = _maxVolume;
         }
         else
         {
-            soundChangeDirection = - _soundChangeRate;
             target = 0;
         }
 
         if (_repleseCoroutine != null)
             StopCoroutine(_repleseCoroutine);
 
-        _repleseCoroutine = StartCoroutine(ChangesSound(soundChangeDirection, target));
+        _repleseCoroutine = StartCoroutine(ChangesSound(target));
     }
 
-    private IEnumerator ChangesSound(float soundChangeDirection, float target)
+    private IEnumerator ChangesSound(float target)
     {
-        var timeDelay = new WaitForSeconds(_soundChangeRate);
+        var timeDelay = new WaitForSeconds(Time.deltaTime);
 
         while (_audioSource.volume != target)
         {
-            _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, _maxVolume, soundChangeDirection);
+            _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, target, _soundChangeRate);
             yield return timeDelay;
         }
 
